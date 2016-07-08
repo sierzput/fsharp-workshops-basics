@@ -1,41 +1,93 @@
 ﻿(**
-- title : FsReveal 
-- description : Introduction to FsReveal
-- author : Karlkim Suwanmongkol
-- theme : Sky
+- title : Basic concepts of Functional Programming
+- description : Basic concepts of Functional Programming
+- author : Tomasz Heimowski
+- theme : night
 - transition : default
 
 ***
 
-### What is FsReveal?
+## F# CAMP
 
-- Generates [reveal.js](http://lab.hakim.se/reveal-js/#/) presentation from [markdown](http://daringfireball.net/projects/markdown/)
-- Utilizes [FSharp.Formatting](https://github.com/tpetricek/FSharp.Formatting) for markdown parsing
+### Basic concepts of Functional Programming
 
-***
+### Tomasz Heimowski
 
-### Reveal.js
+    [lang=bash]
+    git clone https://github.com/theimowski/fsharp-workshops-basics.git
 
-- A framework for easily creating beautiful presentations using HTML.  
-  
-> **Atwood's Law**: any application that can be written in JavaScript, will eventually be written in JavaScript.
+or download the package from [here](https://github.com/theimowski/fsharp-workshops-basics/archive/master.zip)
 
-***
+---
 
-### FSharp.Formatting
+### Agenda
 
-- F# tools for generating documentation (Markdown processor and F# code formatter).
-- It parses markdown and F# script file and generates HTML or PDF.
-- Code syntax highlighting support.
-- It also evaluates your F# code and produce tooltips.
+1. Immutable values
+2. Recursion
+3. Expressions
 
 ***
 
-### Syntax Highlighting
+## Immutable values
 
-#### F# (with tooltips)
+---
 
+### New Stuff 1.1
+#### Let bindings *)
+
+let value = 5
+
+(**
+#### Type inference *)
+
+let stringValue = "Hi there"
+let integerValue = 100
+
+(**
+
+---
+
+### Example 1.1
+#### Processing an immutable value
+
+``System.String`` is an example of immutable type in .NET *)
+
+let helloWorld = "Hello World from F# program!"
+let replaced = helloWorld.Replace("o", "u")
+let substring = replaced.Substring(0, replaced.IndexOf("#") + 1)
+let ``example 1.1`` = substring.ToLower()
+
+(** #### Result: *)
+(*** include-value: ``example 1.1`` ***)
+
+(**
+---
+
+### Exercise 1.1
+
+Compute below expression with help of `let` bindings for each computation step (remember about operator precedence) :
+
+    200+(10/2)*5-50
+
+#### Your code goes below: *)
+
+let ``exercise 1.1`` = 0
+
+(** #### Result: *)
+(*** include-value: ``exercise 1.1`` ***)
+
+(**
+***
+
+## Recursion
+
+***
+
+## Expression
+
+***
 *)
+
 let a = 5
 let factorial x = [1..x] |> List.reduce (*)
 let c = factorial a
@@ -62,93 +114,5 @@ let prices = [|53000<dollar>;44000<dollar>;59000<dollar>;82000<dollar>|]
 (*** include-value: prices.[0]/sizes.[0] ***)
 (**
 
----
-
-#### C#
-
-    [lang=cs]
-    using System;
-
-
-    class Program
-    {
-        static void Main()
-        {
-            Console.WriteLine("Hello, world!");
-        }
-    }
-
-
----
-
-#### JavaScript
-
-    [lang=js]
-    function copyWithEvaluation(iElem, elem) {
-      return function (obj) {
-          var newObj = {};
-          for (var p in obj) {
-              var v = obj[p];
-              if (typeof v === "function") {
-                  v = v(iElem, elem);
-              }
-              newObj[p] = v;
-          }
-          if (!newObj.exactTiming) {
-              newObj.delay += exports._libraryDelay;
-          }
-          return newObj;
-      };
-    }
-
----
-
-#### Haskell
- 
-    [lang=haskell]
-    recur_count k = 1 : 1 : zipWith recurAdd (recur_count k) (tail (recur_count k))
-            where recurAdd x y = k * x + y
-
-    main = do
-      argv <- getArgs
-      inputFile <- openFile (head argv) ReadMode
-      line <- hGetLine inputFile
-      let [n,k] = map read (words line)
-      printf "%d\n" ((recur_count k) !! (n-1))
-
-
-*code from [NashFP/rosalind](https://github.com/NashFP/rosalind/blob/master/mark_wutka%2Bhaskell/FIB/fib_ziplist.hs)*
-
----
-
-### SQL
- 
-    [lang=sql]
-    select * 
-    from 
-      (select 1 as Id union all select 2 union all select 3) as X 
-    where Id in (@Ids1, @Ids2, @Ids3)
-
-*sql from [Dapper](https://code.google.com/p/dapper-dot-net/)* 
-
-***
-
-**Bayes' Rule in LaTeX**
-
-$ \Pr(A|B)=\frac{\Pr(B|A)\Pr(A)}{\Pr(B|A)\Pr(A)+\Pr(B|\neg A)\Pr(\neg A)} $
-
-***
-
-### The Reality of a Developer's Life 
-
-**When I show my boss that I've fixed a bug:**
-  
-![When I show my boss that I've fixed a bug](http://www.topito.com/wp-content/uploads/2013/01/code-07.gif)
-  
-**When your regular expression returns what you expect:**
-  
-![When your regular expression returns what you expect](http://www.topito.com/wp-content/uploads/2013/01/code-03.gif)
-  
-*from [The Reality of a Developer's Life - in GIFs, Of Course](http://server.dzone.com/articles/reality-developers-life-gifs)*
 
 *)
