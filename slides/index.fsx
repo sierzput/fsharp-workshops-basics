@@ -22,7 +22,7 @@ or download the package from [here](https://github.com/theimowski/fsharp-worksho
     cd fsharp-workshops-basics
     .\build.cmd KeepRunning
 
-the slides are re-generated **every time the script is saved** 
+slides are re-generated every time the script (/slides/index.fsx) is **changed**
 
 ---
 
@@ -152,12 +152,12 @@ let pipeResult =
 Note: a new immutable value is created in each computation step
 
 [C# version](http://theimowski.com/fsharp-workshops-intro/#/4/3) *)
-let odd number =
+let isOdd number =
     number % 2 = 1
 
 let ``example 1.2`` = 
     [2 .. 10]
-    |> List.filter odd
+    |> List.filter isOdd
     |> List.map string
     |> String.concat ";"
 (** #### Result: *)
@@ -167,7 +167,7 @@ let ``example 1.2`` =
 ---
 
 ### Exercise 1.2
-Define `even` function of type `int -> bool` and sum even numbers from 2 up to 100.
+Define `isEven` function of type `int -> bool` and sum even numbers from 2 up to 100.
 Hint: Use `List.sum` function
 
     2 + 4 + 6 + ... + 100
@@ -386,18 +386,18 @@ type Result =
 
 ### Example 3.1
 #### Modelling with Discriminated Union Types *)
-type Fruit =
+type FruitType =
 | Banana
 | Apple
 | Grapefruit
 
 type Meal = 
-| Healthy of Fruit
+| Fruit of FruitType
 | Sandwich
 | FastFood of string
 
 let ``example 3.1`` = 
-    [Sandwich; FastFood "Bar Żuławski"; Healthy Apple]
+    [Sandwich; FastFood "Bar Żuławski"; Fruit Apple]
 (** #### Result: *)
 (*** include-value: ``example 3.1`` ***)
 (**
@@ -479,49 +479,58 @@ let ``exercise 3.2`` = apply Divide 15 4
 
 
 
-
-
 ---
 
-### Summary: Pattern Matching
+### New Stuff 3.3
+#### Pattern matching strings *)
+let patternMatchString value =
+    match value with
+    | "Dog" -> "Animal"
+    | "Cat" -> "Animal"
+    | x     -> "Something different"
 
----
-
-### Links
-
-* [Discriminated Unions - Adding types together](https://fsharpforfunandprofit.com/posts/discriminated-unions/) by Scott Wlaschin
-
-***
-
-## Recursion
-
----
-
-### New Stuff X.X
-#### Something new *)
-// code
+let matchAnimal = patternMatchString "Chair"
+(*** include-value: matchAnimal ***)
 (**
 
 ---
 
-### Example X.X
-#### Some example *)
-//let example = "example"
+#### Nested `match` expressions *)
+let matchFloatingPoint value =
+    match value with
+    | "1" -> 1.0
+    | "2" -> 2.0
+    | x   ->
+        match x with
+        | "1.0" -> 1.0
+        | "2.5" -> 2.5
+        | y     -> 0.0
+(**
+
+---
+
+### Example 3.3
+#### Nested `match` - checking if meal is healthy *)
+let isHealthy meal =
+    match meal with
+    | Fruit _ -> true
+    | Sandwich _ -> false
+    | FastFood restaurant ->
+        match restaurant with
+        | "Green Way" -> true
+        | _ -> false
+
+let ``example 3.3`` = FastFood "Bar Żuławski" |> isHealthy
 (** #### Result: *)
-(*** include-value: ``example`` ***)
+(*** include-value: ``example 3.3`` ***)
 (**
 
 ---
 
-### Exercise X.X
-Exercise:
-
-    ((2+7)/3+(14-3)*4)+3
+### Exercise 3.3
+Implement `parseSymbol` - try parse all operators first, and then in nested `match` expression use `parseNumber` function 
 
 #### Your code goes below: *)
-
-// Function declaration
-// Pattern matching
 let parseSymbol value =
     match value with
     | "+" -> Some (Op Plus)
@@ -533,8 +542,20 @@ let parseSymbol value =
         | Some num -> Some (Number num)
         | None -> None
 
-// Expression
-// Immutable
+let ``exercise 3.3`` = List.map parseSymbol ["+"; "/"; "12"; "uups"] 
+(** #### Result: *)
+(*** include-value: ``exercise 3.3`` ***)
+(**
+
+---
+
+
+
+
+### Exercise 3.4
+Implement `parseSymbols`. Useful functions: `List.map`, `List.forAll`, `Option.isSome`, `Option.get` as well as `splitBy` and `parseSymbol` 
+
+#### Your code goes below: *)
 let parseSymbols expression =
     let symbols =
         expression
@@ -545,8 +566,75 @@ let parseSymbols expression =
     else
         None
 
-// Recursion
-// Pattern matching lists
+let ``exercise 3.4`` = "1 2 / +" |> parseSymbols
+(** #### Result: *)
+(*** include-value: ``exercise 3.4`` ***)
+(**
+
+
+
+
+
+---
+
+### Summary: Pattern Matching
+
+---
+
+### Links
+
+* [Discriminated Unions - Adding types together](https://fsharpforfunandprofit.com/posts/discriminated-unions/) by Scott Wlaschin
+* [Pattern matching for conciseness](http://fsharpforfunandprofit.com/posts/match-expression/) by Scott Wlaschin
+* [Match expressions - The workhorse of F#](http://fsharpforfunandprofit.com/posts/match-expression/) by Scott Wlaschin
+* [Exhaustive pattern matching - A powerful technique to ensure correctness](https://fsharpforfunandprofit.com/posts/correctness-exhaustive-pattern-matching/) by Scott Wlaschin
+
+***
+
+## Recursion
+
+
+
+
+
+---
+
+### New Stuff 4.1
+#### Pattern matching lists *)
+// code
+(**
+
+#### Pattern in pattern *)
+// code
+(**
+
+#### Recursive functions *)
+// code
+(**
+
+---
+
+### Example 4.1
+#### Recursive call with "accumulators" *)
+let rec partitionEvenOdd even odd numbers =
+    match numbers with
+    | [] -> 
+        (even, odd)
+    | h :: tail when h % 2 = 0 ->
+        partitionEvenOdd (h :: even) odd tail
+    | h :: tail when h % 2 = 1 ->
+        partitionEvenOdd even (h :: odd) tail
+
+let ``example 4.1`` = partitionEvenOdd [] [] [1..10]
+(** #### Result: *)
+(*** include-value: ``example 4.1`` ***)
+(**
+
+---
+
+### Exercise 4.1
+Implement `compute` function
+
+#### Your code goes below: *)
 let rec compute stack symbols =
     match stack, symbols with
     | [result], [] -> 
@@ -559,7 +647,39 @@ let rec compute stack symbols =
     | _ -> 
         None
 
-// Recursion
+let ``exercise 4.1`` = compute [] [Number 4; Number 2; Op Multiply]
+(** #### Result: *)
+(*** include-value: ``exercise 4.1`` ***)
+(**
+
+
+
+
+
+
+
+---
+
+### New Stuff 4.2
+#### Something new *)
+// code
+(**
+
+---
+
+### Example 4.2
+#### Some example *)
+let ``example 4.2`` = "example"
+(** #### Result: *)
+(*** include-value: ``example 4.2`` ***)
+(**
+
+---
+
+### Exercise 4.2
+Implement `onp` function
+
+#### Your code goes below: *)
 let onp expression = 
     match parseSymbols expression with
     | Some symbols ->
@@ -567,14 +687,32 @@ let onp expression =
     | None ->
         None
 
-let result = onp "2 7 + 3 / 14 3 - 4 * + 3 +"
-(** --- 
-
-#### Result: *)
-(*** include-value: result ***)
+let ``exercise 4.2`` = onp "2 7 + 3 / 14 3 - 4 * + 3 +"
+(** #### Result: *)
+(*** include-value: ``exercise 4.2`` ***)
 (**
 
+---
+
+### Summary: Recursion
+
+---
+
+### Links
 
 ***
+
+## Summary
+
+* Immutable values
+* Expressions
+* Pattern matching
+* Recursion
+
+---
+
+## Next week
+
+### Functional Data Structures
 
 *)
