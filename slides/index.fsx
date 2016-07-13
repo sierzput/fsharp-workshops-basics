@@ -73,12 +73,15 @@ let example = "example"
 ### Exercise X.X
 Exercise:
 
-#### Your code goes below: *)
+#### --------------- Your code goes below --------------- *)
 let exercise = "exercise"
 (** #### Result: *)
 (*** include-value: ``exercise`` ***)
 (**
 
+---
+
+### Summary and links go at the end of each part
 
 ***
 
@@ -116,7 +119,7 @@ Compute below expression with help of `let` bindings for each computation step (
 
     200+(10/2)*5-50
 
-#### Your code goes below: *)
+#### --------------- Your code goes below --------------- *)
 let ``exercise 1.1`` = 0
 (** #### Result: *)
 (*** include-value: ``exercise 1.1`` ***)
@@ -131,9 +134,10 @@ let ``exercise 1.1`` = 0
 let range = [28 .. 38]
 (*** include-value: range ***)
 (** ---
-#### Function declaration *)
+#### Function declaration and application *)
 let add x y =
     x + y
+
 let addResult = add 5 6
 (*** include-value: addResult ***)
 (** ---
@@ -172,7 +176,7 @@ Hint: Use `List.sum` function
 
     2 + 4 + 6 + ... + 100
 
-#### Your code goes below: *)
+#### --------------- Your code goes below --------------- *)
 let ``exercise 1.2`` = 0
 
 (** #### Result: *)
@@ -266,19 +270,11 @@ let ``example 2.1`` = parseBool "True"
 ---
 
 ### Exercise 2.1
-Implement `parseNumber` function of type `string -> Option<int>`
+Implement `parseNumber` function. `Seq.forall`, `System.Char.IsDigit`, `System.Int32.Parse` may turn out useful.
 
-Useful functions: `Seq.forall`, `System.Char.IsDigit`, `System.Int32.Parse`
-
-#### Your code goes below: *)
-let parseNumber value =
-    let onlyDigits = 
-        value 
-        |> Seq.forall System.Char.IsDigit
-    if onlyDigits && (Seq.length value > 0) then
-        Some (System.Int32.Parse value)
-    else
-        None
+#### --------------- Your code goes below --------------- *)
+let parseNumber (value: string) : Option<int> =
+    None
 
 let ``exercise 2.1`` = parseNumber "42"
 (** #### Result: *)
@@ -325,13 +321,10 @@ let ``example 2.2`` = isPalindrome "kajak"
 ---
 
 ### Exercise 2.2
-Declare `splitBy` function (with given type)
-
-Hints: Use standard `String` object methods and `Array.toList` function to convert array to list type
-#### Your code goes below: *)
+Declare `splitBy` function. Hints: Use standard `String` object methods and `Array.toList` function to convert array to list type
+#### --------------- Your code goes below --------------- *)
 let splitBy (separator : char) (str : string) : list<string> =
-    str.Split([|separator|], System.StringSplitOptions.RemoveEmptyEntries)
-    |> Array.toList
+    []
 
 let ``exercise 2.2`` = 
     "1,3,5,8,10" 
@@ -407,20 +400,14 @@ let ``example 3.1`` =
 ### Exercise 3.1
 Define `Operator` and `Symbol` Discriminated Union Types. `Symbol` should use `Operator` as field in one case
 
-#### Your code goes below: *)
-type Operator =
-| Plus
-| Minus
-| Multiply
-| Divide
+#### --------------- Your code goes below --------------- *)
+// `Int` is used here only so that the code compiles. 
+// Remove it and instead define proper Discriminated Union cases.
+type Operator = Int
 
-type Symbol =
-| Number of int
-| Op of Operator
+// Same as above
+type Symbol = Int
 
-let ``exercise 3.1`` = Op Plus
-(** #### Result: *)
-(*** include-value: ``exercise 3.1`` ***)
 (**
 
 
@@ -461,17 +448,14 @@ let ``example 3.2`` = area (Circle 10.0)
 ---
 
 ### Exercise 3.2
-With help of pattern matching, implement `apply` function which applies given `Operator` to two `Int` (operands)
+With help of pattern matching, implement `apply` function.
 
-#### Your code goes below: *)
-let apply operator fstNum sndNum =
-    match operator with
-    | Plus -> fstNum + sndNum
-    | Minus -> fstNum - sndNum
-    | Multiply -> fstNum * sndNum
-    | Divide -> fstNum / sndNum
+#### --------------- Your code goes below --------------- *)
+let apply (operator : Operator) (left : int) (right : int) : int =
+    0
 
-let ``exercise 3.2`` = apply Divide 15 4
+// test the function, e.g. `apply Divide 15 4`
+let ``exercise 3.2`` = 0
 (** #### Result: *)
 (*** include-value: ``exercise 3.2`` ***)
 (**
@@ -530,17 +514,9 @@ let ``example 3.3`` = FastFood "Bar Żuławski" |> isHealthy
 ### Exercise 3.3
 Implement `parseSymbol` - try parse all operators first, and then in nested `match` expression use `parseNumber` function 
 
-#### Your code goes below: *)
-let parseSymbol value =
-    match value with
-    | "+" -> Some (Op Plus)
-    | "-" -> Some (Op Minus)
-    | "*" -> Some (Op Multiply)
-    | "/" -> Some (Op Divide)
-    | str -> 
-        match parseNumber str with
-        | Some num -> Some (Number num)
-        | None -> None
+#### --------------- Your code goes below --------------- *)
+let parseSymbol (value : string) : Option<Symbol> =
+    None
 
 let ``exercise 3.3`` = List.map parseSymbol ["+"; "/"; "12"; "uups"] 
 (** #### Result: *)
@@ -555,16 +531,9 @@ let ``exercise 3.3`` = List.map parseSymbol ["+"; "/"; "12"; "uups"]
 ### Exercise 3.4
 Implement `parseSymbols`. Useful functions: `List.map`, `List.forAll`, `Option.isSome`, `Option.get` as well as `splitBy` and `parseSymbol` 
 
-#### Your code goes below: *)
-let parseSymbols expression =
-    let symbols =
-        expression
-        |> splitBy ' '
-        |> List.map parseSymbol
-    if symbols |> List.forall Option.isSome then
-        Some (symbols |> List.map Option.get)
-    else
-        None
+#### --------------- Your code goes below --------------- *)
+let parseSymbols (expression: string) : Option<list<Symbol>> =
+    None
 
 let ``exercise 3.4`` = "1 2 / +" |> parseSymbols
 (** #### Result: *)
@@ -599,17 +568,56 @@ let ``exercise 3.4`` = "1 2 / +" |> parseSymbols
 ---
 
 ### New Stuff 4.1
-#### Pattern matching lists *)
-// code
-(**
-
-#### Pattern in pattern *)
-// code
-(**
 
 #### Recursive functions *)
-// code
+let rec countdown counter =
+    match counter with
+    | 0 -> ""
+    | x -> x.ToString() + ";" + countdown (counter - 1)
+
+let counting = countdown 10
+(*** include-value: counting ***)
 (**
+
+---
+
+#### Tail-recursive functions with accumulator *)
+let rec countdownAcc counter acc =
+    match counter with
+    | 0 -> acc
+    | x -> countdownAcc (counter - 1) (acc + ";" + x.ToString())
+    
+let countingAcc = countdownAcc 10 ""
+(*** include-value: countingAcc ***)
+(**
+
+---
+
+#### Pattern matching lists *)
+let rec commaSeparated list acc =
+    match list with
+    | [] -> acc
+    | [single] -> acc + "," + single
+    | head :: tail -> commaSeparated tail (acc + "," + head)
+
+let csv = commaSeparated ["some";"values";"go";"here"] ""
+(*** include-value: csv ***)
+(**
+
+---
+
+#### Pattern in pattern *)
+let rec formatOptionalInts ints acc =
+    match ints with
+    | [] -> acc
+    | Some 0 :: rest -> formatOptionalInts rest (acc + " Zero")
+    | Some x :: rest -> formatOptionalInts rest (acc + " " + x.ToString())
+    | None   :: rest -> formatOptionalInts rest (acc + " NoValue!")
+
+let optionalInts = formatOptionalInts [Some 28; Some 0; None] ""
+(*** include-value: optionalInts ***)
+(**
+
 
 ---
 
@@ -632,22 +640,14 @@ let ``example 4.1`` = partitionEvenOdd [] [] [1..10]
 ---
 
 ### Exercise 4.1
-Implement `compute` function
+Implement `compute` function ([Wiki](https://pl.wikipedia.org/wiki/Odwrotna_notacja_polska)). Hint: `::` is "right-associative"
 
-#### Your code goes below: *)
-let rec compute stack symbols =
-    match stack, symbols with
-    | [result], [] -> 
-        Some result
-    | stack, Number number :: rest -> 
-        compute (number :: stack) rest
-    | sndNum :: fstNum :: stack, Op operator :: rest ->
-        let opResult = apply operator fstNum sndNum 
-        compute (opResult :: stack) rest
-    | _ -> 
-        None
+#### --------------- Your code goes below --------------- *)
+let rec compute (stack : list<int>) (symbols : list<Symbol>) : Option<int> =
+    None
 
-let ``exercise 4.1`` = compute [] [Number 4; Number 2; Op Multiply]
+// test the function, e.g. `compute [] [Number 4; Number 2; Op Multiply]`
+let ``exercise 4.1`` : Option<int> = None
 (** #### Result: *)
 (*** include-value: ``exercise 4.1`` ***)
 (**
@@ -660,32 +660,12 @@ let ``exercise 4.1`` = compute [] [Number 4; Number 2; Op Multiply]
 
 ---
 
-### New Stuff 4.2
-#### Something new *)
-// code
-(**
-
----
-
-### Example 4.2
-#### Some example *)
-let ``example 4.2`` = "example"
-(** #### Result: *)
-(*** include-value: ``example 4.2`` ***)
-(**
-
----
-
 ### Exercise 4.2
-Implement `onp` function
+Using `parseSymbols` and `compute`, write `onp` function
 
-#### Your code goes below: *)
-let onp expression = 
-    match parseSymbols expression with
-    | Some symbols ->
-        compute [] symbols
-    | None ->
-        None
+#### --------------- Your code goes below --------------- *)
+let onp (expression : string) : Option<int> = 
+    None
 
 let ``exercise 4.2`` = onp "2 7 + 3 / 14 3 - 4 * + 3 +"
 (** #### Result: *)
