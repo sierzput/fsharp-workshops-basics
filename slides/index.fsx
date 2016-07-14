@@ -563,6 +563,7 @@ let isHealthy meal =
     | Fruit _ -> true
     | Sandwich _ -> false
     | FastFood restaurant ->
+        // we can further use matched `restaurant` symbol
         match restaurant with
         | "Green Way" -> true
         | _ -> false
@@ -580,7 +581,7 @@ let ``example 3.3`` =
 Implement `parseSymbol` - try parse all operators first, and then in nested `match` expression use `parseNumber` function 
 
 #### --------------- Your code goes below --------------- *)
-let parseSymbol (value : string) : Option<Symbol> =
+let parseSymbol (token : string) : Option<Symbol> =
     None
 
 let ``exercise 3.3`` = List.map parseSymbol ["+"; "/"; "12"; "uups"] 
@@ -694,7 +695,7 @@ let optionalInts = formatOptionalInts "" [Some 28; Some 0; None]
 #### Recursive call with "accumulators" *)
 let rec partitionEvenOdd even odd numbers =
     match numbers with
-    | [] -> 
+    | [] ->
         (even, odd)
     | h :: tail when h % 2 = 0 ->
         partitionEvenOdd (h :: even) odd tail
@@ -745,9 +746,16 @@ let ``exercise 4.2`` = onp "2 7 + 3 / 14 3 - 4 * + 3 +"
 
 ### Summary: Recursion
 
+* Recursion is a preferred way of processing in Functional Programming
+* F# provides tail recursion feature for preventing Stack Overflows
+* Recursive functions combined with pattern matching result in very concise and declarative code
+
 ---
 
 ### Links
+
+* [Recursion and Tail-recursion in F#](https://cyanbyfuchsia.wordpress.com/2014/02/12/recursion-and-tail-recursion-in-f/) - Karlkim Suwanmongkol
+* [F# Tail Calls](https://blogs.msdn.microsoft.com/fsharpteam/2011/07/08/tail-calls-in-f/) - MSDN
 
 ***
 
@@ -762,6 +770,7 @@ let ``exercise 4.2`` = onp "2 7 + 3 / 14 3 - 4 * + 3 +"
 
 ## Next week
 
-### Functional Data Structures + Something more?
+### Functional Data Structures
+### + Something more?
 
 *)
