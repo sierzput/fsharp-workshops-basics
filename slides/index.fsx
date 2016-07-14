@@ -11,24 +11,22 @@
 
 ### Basic concepts of Functional Programming
 
-### Tomasz Heimowski
-
     [lang=bash]
     git clone https://github.com/theimowski/fsharp-workshops-basics.git
 
-or download the package from [here](https://github.com/theimowski/fsharp-workshops-basics/archive/master.zip), and then:
+or download ZIP from [here](https://github.com/theimowski/fsharp-workshops-basics/archive/master.zip), then in **Command Prompt**:
 
     [lang=bash]
     cd fsharp-workshops-basics
     .\build.cmd KeepRunning
 
-slides are re-generated every time the script (/slides/index.fsx) is **changed**
+slides are regenerated when the script (.\slides\index.fsx) is **saved**
 
 ---
 
 ### Agenda
 
-* Workshop Format
+* Intro - workshop format
 * Immutable values
 * Expressions
 * Pattern matching
@@ -40,17 +38,18 @@ slides are re-generated every time the script (/slides/index.fsx) is **changed**
 
 ---
 
-### Problem to solve: ONP notation
+### Problem to solve
+#### Evaluate expression written in [ONP](https://pl.wikipedia.org/wiki/Odwrotna_notacja_polska) notation
 
-[ONP on Wiki](https://pl.wikipedia.org/wiki/Odwrotna_notacja_polska)
-
-Conventional format:
+Conventional notation:
 
     ((2+7)/3+(14-3)*4)+3
 
-ONP format:
+ONP notation:
 
     2 7 + 3 / 14 3 - 4 * + 3 +
+
+Parse input ==> Evaluate
 
 ---
 
@@ -64,7 +63,7 @@ ONP format:
 ### Example X.X
 #### Some example *)
 let example = "example"
-(** #### Result: *)
+(** #### Value of ``example`` *)
 (*** include-value: ``example`` ***)
 (**
 
@@ -75,13 +74,27 @@ Exercise:
 
 #### --------------- Your code goes below --------------- *)
 let exercise = "exercise"
-(** #### Result: *)
+(** #### Value of ``exercise`` *)
 (*** include-value: ``exercise`` ***)
 (**
 
 ---
 
-### Summary and links go at the end of each part
+### Editors + tooling - demo
+
+* Visual Studio with F# + Visual F# Power Tools
+* Visual Studio Code + Ionide extension
+
+http://fsharp.org/use/windows/
+
+* Running code in FSI (FSharp Interactive)
+* Regenerating the slides
+
+---
+
+### Summary/links go at the end of each part
+
+Most links point to [Scott Wlaschin](https://fsharpforfunandprofit.com) blog
 
 ***
 
@@ -108,7 +121,7 @@ let helloWorld = "Hello World from F# program!"
 let replaced = helloWorld.Replace("o", "u")
 let substring = replaced.Substring(0, replaced.IndexOf("#") + 1)
 let ``example 1.1`` = substring.ToLower()
-(** #### Result: *)
+(** #### Value of ``example 1.1`` *)
 (*** include-value: ``example 1.1`` ***)
 (**
 
@@ -117,11 +130,11 @@ let ``example 1.1`` = substring.ToLower()
 ### Exercise 1.1
 Compute below expression with help of `let` bindings for each computation step (remember about operator precedence) :
 
-    200+(10/2)*5-50
+    200+(10-2)*5-50
 
 #### --------------- Your code goes below --------------- *)
 let ``exercise 1.1`` = 0
-(** #### Result: *)
+(** #### Value of ``exercise 1.1`` *)
 (*** include-value: ``exercise 1.1`` ***)
 (**
 
@@ -164,9 +177,35 @@ let ``example 1.2`` =
     |> List.filter isOdd
     |> List.map string
     |> String.concat ";"
-(** #### Result: *)
+(** #### Value of ``example 1.2`` *)
 (*** include-value: ``example 1.2`` ***)
 (**
+
+---
+
+### Pipe operator - think "Extension methods"
+
+C#
+
+    [lang=csharp]
+    public static IEnumerable<'T> Where (
+        this IEnumberable<'T> sequence, 
+        Func<'T, bool> predicate) { ... }
+
+    public static bool IsOdd (int number) { return number % 2 == 1; }
+
+    numbers.Where (IsOdd)
+
+F#
+
+    [lang=fsharp]
+    let filter 
+        (predicate : 'a -> bool) 
+        (sequence : seq<'a>) = ...
+
+    let isOdd number = n % 2 = 1
+
+    numbers |> filter isOdd
 
 ---
 
@@ -179,7 +218,7 @@ Hint: Use `List.sum` function
 #### --------------- Your code goes below --------------- *)
 let ``exercise 1.2`` = 0
 
-(** #### Result: *)
+(** #### Value of ``exercise 1.2`` *)
 (*** include-value: ``exercise 1.2`` ***)
 (**
 
@@ -191,10 +230,15 @@ let ``exercise 1.2`` = 0
 
 ### Summary: Immutable Values  
 
+* By **default** values in F# are immutable
+* "Pipe" operator (`|>`) is a nice syntactic sugar for writing a sequence of expressions
+* Immutable values make it easy to write concurrent code (thread safety for free)
+
 ---
 
 ### Links
 
+* [F# Values](https://msdn.microsoft.com/en-us/visualfsharpdocs/conceptual/values-%5bfsharp%5d) - MSDN
 * [Immutability - Making your code predictable](https://fsharpforfunandprofit.com/posts/correctness-immutability/) by Scott Wlaschin
 
 ***
@@ -207,14 +251,20 @@ let ``exercise 1.2`` = 0
 
 ### New Stuff 2.1
 #### In F# everything is an expression *)
+// no statements - `Console.WriteLine` returns `Unit` ()
 let writeLine = System.Console.WriteLine "Hello"
-let writeLineIsUnit = writeLine = ()
+
+// in let bindings, `=` associates symbol with value
+let writeLineIsUnit : bool = 
+    // but anywhere else, `=` means equality test
+    writeLine = ()
+
 (*** include-value: ``writeLineIsUnit`` ***)
 (**
 
 ---
 
-#### If - then expression *)
+#### If - then - else expression *)
 let day =
     if System.DateTime.Now.DayOfWeek = System.DayOfWeek.Thursday then
         "thursday"
@@ -225,7 +275,7 @@ let day =
 
 ---
 
-#### Binding values inside functions *)
+#### Binding values in inside scope *)
 let day2 =
     let today = System.DateTime.Now.DayOfWeek 
     if today = System.DayOfWeek.Thursday then
@@ -263,21 +313,24 @@ let parseBool (value : string) =
         None
 
 let ``example 2.1`` = parseBool "True"
-(** #### Result: *)
+(** #### Value of ``example 2.1`` *)
 (*** include-value: ``example 2.1`` ***)
 (**
 
 ---
 
 ### Exercise 2.1
-Implement `parseNumber` function. `Seq.forall`, `System.Char.IsDigit`, `System.Int32.Parse` may turn out useful.
+
+Implement `parseNumber` function. 
+
+You might find following functions useful: `Seq.forall`, `System.Char.IsDigit`, `System.Int32.Parse`.
 
 #### --------------- Your code goes below --------------- *)
 let parseNumber (value: string) : Option<int> =
     None
 
 let ``exercise 2.1`` = parseNumber "42"
-(** #### Result: *)
+(** #### Value of ``exercise 2.1`` *)
 (*** include-value: ``exercise 2.1`` ***)
 (**
 
@@ -288,7 +341,7 @@ let ``exercise 2.1`` = parseNumber "42"
 ---
 
 ### New Stuff 2.2
-#### Dot notation (type annotations) *)
+#### Dot notation, Type annotations *)
 let length (value : string) =
     value.Length
 
@@ -314,14 +367,16 @@ let isPalindrome (value : string) =
     charList = reversed // this boolean expression returns value
 
 let ``example 2.2`` = isPalindrome "kajak"
-(** #### Result: *)
+(** #### Value of ``example 2.2`` *)
 (*** include-value: ``example 2.2`` ***)
 (**
 
 ---
 
 ### Exercise 2.2
-Declare `splitBy` function. Hints: Use standard `String` object methods and `Array.toList` function to convert array to list type
+Declare `splitBy` function. 
+
+Hints: Use standard `String` object methods and `Array.toList` function to convert array to list type
 #### --------------- Your code goes below --------------- *)
 let splitBy (separator : char) (str : string) : list<string> =
     []
@@ -329,7 +384,7 @@ let splitBy (separator : char) (str : string) : list<string> =
 let ``exercise 2.2`` = 
     "1,3,5,8,10" 
     |> splitBy ',' 
-(** #### Result: *)
+(** #### Value of ``exercise 2.2`` *)
 (*** include-value: ``exercise 2.2`` ***)
 (**
 
@@ -339,11 +394,16 @@ let ``exercise 2.2`` =
 
 ### Summary: Expressions
 
+* There are no statements only expressions in F#
+* Therefore no need for `return` keywords - last expression is return value
+* `Option` type is the preffered way to model missing values (as opposed to `null`)
+
 ---
 
 ### Links
 
 * [Expressions and Syntax series](https://fsharpforfunandprofit.com/series/expressions-and-syntax.html) by Scott Wlaschin
+* [The Option type - And why it is not null or nullable](https://fsharpforfunandprofit.com/posts/the-option-type/) by Scott Wlaschin
 
 ***
 
@@ -367,6 +427,7 @@ type Size =
 #### Discriminated Unions - Complex cases *)
 type Shape =
 | Square of edge : float
+// `*` in type declarations stands for tuples
 | Rectangle of width : float * height : float
 | Circle of radius : float
 
@@ -391,14 +452,16 @@ type Meal =
 
 let ``example 3.1`` = 
     [Sandwich; FastFood "Bar Żuławski"; Fruit Apple]
-(** #### Result: *)
+(** #### Value of ``example 3.1`` *)
 (*** include-value: ``example 3.1`` ***)
 (**
 
 ---
 
 ### Exercise 3.1
-Define `Operator` and `Symbol` Discriminated Union Types. `Symbol` should use `Operator` as field in one case
+Define `Operator` and `Symbol` Discriminated Union Types. 
+
+`Symbol` should use `Operator` as field in one case
 
 #### --------------- Your code goes below --------------- *)
 // `Int` is used here only so that the code compiles. 
@@ -441,7 +504,7 @@ let area shape =
     | Circle radius -> System.Math.PI * (radius ** 2.0)  
 
 let ``example 3.2`` = area (Circle 10.0)
-(** #### Result: *)
+(** #### Value of ``example 3.2`` *)
 (*** include-value: ``example 3.2`` ***)
 (**
 
@@ -456,7 +519,7 @@ let apply (operator : Operator) (left : int) (right : int) : int =
 
 // test the function, e.g. `apply Divide 15 4`
 let ``exercise 3.2`` = 0
-(** #### Result: *)
+(** #### Value of ``exercise 3.2`` *)
 (*** include-value: ``exercise 3.2`` ***)
 (**
 
@@ -504,8 +567,10 @@ let isHealthy meal =
         | "Green Way" -> true
         | _ -> false
 
-let ``example 3.3`` = FastFood "Bar Żuławski" |> isHealthy
-(** #### Result: *)
+let ``example 3.3`` = 
+    FastFood "Bar Żuławski" 
+    |> isHealthy
+(** #### Value of ``example 3.3`` *)
 (*** include-value: ``example 3.3`` ***)
 (**
 
@@ -519,7 +584,7 @@ let parseSymbol (value : string) : Option<Symbol> =
     None
 
 let ``exercise 3.3`` = List.map parseSymbol ["+"; "/"; "12"; "uups"] 
-(** #### Result: *)
+(** #### Value of ``exercise 3.3`` *)
 (*** include-value: ``exercise 3.3`` ***)
 (**
 
@@ -536,7 +601,7 @@ let parseSymbols (expression: string) : Option<list<Symbol>> =
     None
 
 let ``exercise 3.4`` = "1 2 / +" |> parseSymbols
-(** #### Result: *)
+(** #### Value of ``exercise 3.4`` *)
 (*** include-value: ``exercise 3.4`` ***)
 (**
 
@@ -547,6 +612,10 @@ let ``exercise 3.4`` = "1 2 / +" |> parseSymbols
 ---
 
 ### Summary: Pattern Matching
+
+* Using Discriminated Unions is a neat way to model data 
+* Pattern matching is a powerful and elegant mechanism in F# for "branching" code
+* F# compiler warns when it finds unhandled cases in pattern matching
 
 ---
 
@@ -582,39 +651,39 @@ let counting = countdown 10
 ---
 
 #### Tail-recursive functions with accumulator *)
-let rec countdownAcc counter acc =
+let rec countdownAcc acc counter =
     match counter with
     | 0 -> acc
-    | x -> countdownAcc (counter - 1) (acc + ";" + x.ToString())
+    | x -> countdownAcc (acc + ";" + x.ToString()) (counter - 1)
     
-let countingAcc = countdownAcc 10 ""
+let countingAcc = countdownAcc "" 10
 (*** include-value: countingAcc ***)
 (**
 
 ---
 
 #### Pattern matching lists *)
-let rec commaSeparated list acc =
+let rec commaSeparated acc list =
     match list with
     | [] -> acc
     | [single] -> acc + "," + single
-    | head :: tail -> commaSeparated tail (acc + "," + head)
+    | head :: tail -> commaSeparated (acc + "," + head) tail
 
-let csv = commaSeparated ["some";"values";"go";"here"] ""
+let csv = commaSeparated "" ["some";"values";"go";"here"]
 (*** include-value: csv ***)
 (**
 
 ---
 
 #### Pattern in pattern *)
-let rec formatOptionalInts ints acc =
+let rec formatOptionalInts acc ints =
     match ints with
     | [] -> acc
-    | Some 0 :: rest -> formatOptionalInts rest (acc + " Zero")
-    | Some x :: rest -> formatOptionalInts rest (acc + " " + x.ToString())
-    | None   :: rest -> formatOptionalInts rest (acc + " NoValue!")
+    | Some 0 :: rest -> formatOptionalInts (acc + " Zero") rest
+    | Some x :: rest -> formatOptionalInts (acc + " " + x.ToString()) rest
+    | None   :: rest -> formatOptionalInts (acc + " NoValue!") rest
 
-let optionalInts = formatOptionalInts [Some 28; Some 0; None] ""
+let optionalInts = formatOptionalInts "" [Some 28; Some 0; None]
 (*** include-value: optionalInts ***)
 (**
 
@@ -633,7 +702,7 @@ let rec partitionEvenOdd even odd numbers =
         partitionEvenOdd even (h :: odd) tail
 
 let ``example 4.1`` = partitionEvenOdd [] [] [1..10]
-(** #### Result: *)
+(** #### Value of ``example 4.1`` *)
 (*** include-value: ``example 4.1`` ***)
 (**
 
@@ -648,7 +717,7 @@ let rec compute (stack : list<int>) (symbols : list<Symbol>) : Option<int> =
 
 // test the function, e.g. `compute [] [Number 4; Number 2; Op Multiply]`
 let ``exercise 4.1`` : Option<int> = None
-(** #### Result: *)
+(** #### Value of ``exercise 4.1`` *)
 (*** include-value: ``exercise 4.1`` ***)
 (**
 
@@ -668,7 +737,7 @@ let onp (expression : string) : Option<int> =
     None
 
 let ``exercise 4.2`` = onp "2 7 + 3 / 14 3 - 4 * + 3 +"
-(** #### Result: *)
+(** #### Value of ``exercise 4.2`` *)
 (*** include-value: ``exercise 4.2`` ***)
 (**
 
@@ -693,6 +762,6 @@ let ``exercise 4.2`` = onp "2 7 + 3 / 14 3 - 4 * + 3 +"
 
 ## Next week
 
-### Functional Data Structures
+### Functional Data Structures + Something more?
 
 *)
