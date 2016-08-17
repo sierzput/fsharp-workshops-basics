@@ -89,6 +89,8 @@ http://fsharp.org/use/windows/
 
 * Running code in FSI (FSharp Interactive)
 * Regenerating the slides
+* **DEMO**: running the code (up to current point) in VS and VS Code
+
 
 ---
 
@@ -128,11 +130,12 @@ let ``example 1.1`` = substring.ToLower()
 ---
 
 ### Exercise 1.1
-Compute below expression with help of `let` bindings for each computation step (remember about operator precedence) :
-
-    200+(10-2)*5-50
+Compound interest: compute earnings after 3 years of depositing $1000 on a 10% annual savings account:
 
 #### --------------- Your code goes below --------------- *)
+let initial = 1000.0M
+let afterFirstYear = 0
+// and so on ...
 let ``exercise 1.1`` = 0
 (** #### Value of ``exercise 1.1`` *)
 (*** include-value: ``exercise 1.1`` ***)
@@ -160,7 +163,15 @@ let pipeResult =
     |> add 15
     |> add 6
 (*** include-value: pipeResult ***)
+(** ---
+#### map function  *)
+let lengths = 
+    ["F#"; "is"; "the"; "best"]
+    |> List.map (fun s -> s.Length)
+(*** include-value: lengths ***)
 (**
+`map` is an equivalent of `Select()` in C# LINQ
+
 
 ---
 
@@ -321,9 +332,9 @@ let ``example 2.1`` = parseBool "True"
 
 ### Exercise 2.1
 
-Implement `parseNumber` function. 
-
-You might find following functions useful: `Seq.forall`, `System.Char.IsDigit`, `System.Int32.Parse`.
+Implement `parseNumber` function.
+You might find following functions useful: 
+`ToCharArray()` (String member), `Array.forall`, `System.Char.IsDigit`, `System.Int32.Parse`.
 
 #### --------------- Your code goes below --------------- *)
 let parseNumber (value: string) : Option<int> =
@@ -374,9 +385,8 @@ let ``example 2.2`` = isPalindrome "kajak"
 ---
 
 ### Exercise 2.2
-Declare `splitBy` function. 
-
-Hints: Use standard `String` object methods and `Array.toList` function to convert array to list type
+Declare `splitBy` function - a wrapper function arround `Split` method from `String` object. 
+Hints: Use `Split` method from `String` and `Array.toList` function to convert array to list type.
 #### --------------- Your code goes below --------------- *)
 let splitBy (separator : char) (str : string) : list<string> =
     []
@@ -465,10 +475,12 @@ Define `Operator` and `Symbol` Discriminated Union Types.
 
 #### --------------- Your code goes below --------------- *)
 // `Int` is used here only so that the code compiles. 
-// Remove it and instead define proper Discriminated Union cases.
+// Remove it and instead define proper Discriminated Union cases:
+// Operator might be one of the following: Plus, Minus, Multiply or Divide
 type Operator = Int
 
-// Same as above
+// Same as above:
+// Symbol might be either a NumSymbol (with int) or OpSymbol (with Operator)
 type Symbol = Int
 
 (**
@@ -638,7 +650,6 @@ let ``exercise 3.4`` = "1 2 / +" |> parseSymbols
 ---
 
 ### New Stuff 4.1
-
 #### Recursive functions *)
 let rec countdown counter =
     match counter with
@@ -659,6 +670,28 @@ let rec countdownAcc acc counter =
     
 let countingAcc = countdownAcc "" 10
 (*** include-value: countingAcc ***)
+(**
+
+---
+
+#### Factorial
+*)
+let rec factorial x =
+    match x with
+    | 1 -> 1
+    | _ -> (factorial (x-1)) * x
+
+let factorialOf5 = factorial 5
+(*** include-value: factorialOf5 ***)
+(**
+#### Factorial - with accumulator *)
+let rec factorialTail acc x =
+    match x with 
+    | 1 -> acc
+    | _ -> factorialTail (x*acc) (x-1)
+
+let factorialOf5Tail = factorialTail 1 5
+(*** include-value: factorialOf5Tail ***)
 (**
 
 ---
@@ -709,28 +742,23 @@ let ``example 4.1`` = partitionEvenOdd [] [] [1..10]
 
 ---
 
-### Exercise 4.1
+### Homework 4.1
 Implement `compute` function ([Wiki](https://pl.wikipedia.org/wiki/Odwrotna_notacja_polska)). Hint: `::` is "right-associative"
 
 #### --------------- Your code goes below --------------- *)
 let rec compute (stack : list<int>) (symbols : list<Symbol>) : Option<int> =
     None
 
-// test the function, e.g. `compute [] [Number 4; Number 2; Op Multiply]`
+// test the function, e.g. `compute [] [NumSymbol 4; NumSymbol 2; OpSymbol Multiply]`
 let ``exercise 4.1`` : Option<int> = None
 (** #### Value of ``exercise 4.1`` *)
 (*** include-value: ``exercise 4.1`` ***)
 (**
 
 
-
-
-
-
-
 ---
 
-### Exercise 4.2
+### Homework 4.2
 Using `parseSymbols` and `compute`, write `onp` function
 
 #### --------------- Your code goes below --------------- *)
