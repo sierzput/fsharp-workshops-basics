@@ -312,6 +312,17 @@ let workDay =
 
 ---
 
+#### Dot notation, Wrapper functions *)
+let length (value : string) =
+    value.Length
+
+let lengthOfWord = length "Hello word"
+(*** include-value: ``lengthOfWord`` ***)
+(**
+
+---
+
+
 ### Example 2.1
 #### Parsing boolean value *)
 let parseBool (value : string) =
@@ -352,16 +363,6 @@ let ``exercise 2.1`` = parseNumber "42"
 ---
 
 ### New Stuff 2.2
-#### Dot notation, Type annotations *)
-let length (value : string) =
-    value.Length
-
-let lengthOfWord = length "Hello word"
-(*** include-value: ``lengthOfWord`` ***)
-(**
-
----
-
 #### Array literal *)
 let intArray = [|2;4;5|]
 let rangeArray = [|10..15|]
@@ -373,8 +374,8 @@ let rangeArray = [|10..15|]
 ### Example 2.2
 #### No `return` statements. Last expression is the return value *)
 let isPalindrome (value : string) =
-    let charList = value |> Seq.toList
-    let reversed = value |> Seq.rev |> Seq.toList
+    let charList = value.ToCharArray()
+    let reversed = value.ToCharArray() |> Array.rev
     charList = reversed // this boolean expression returns value
 
 let ``example 2.2`` = isPalindrome "kajak"
