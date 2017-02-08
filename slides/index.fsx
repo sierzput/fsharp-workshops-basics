@@ -73,7 +73,7 @@ let example = "example"
 Exercise:
 
 #### --------------- Your code goes below --------------- *)
-let exercise = "exercise"
+let exercise = "przykład"
 (** #### Value of ``exercise`` *)
 (*** include-value: ``exercise`` ***)
 (**
@@ -134,9 +134,11 @@ Compound interest: compute earnings after 3 years of depositing $1000 on a 10% a
 
 #### --------------- Your code goes below --------------- *)
 let initial = 1000.0M
-let afterFirstYear = 0
+let afterFirstYear = initial * 1.1M
+let afterSndYear = afterFirstYear * 1.1M
+let afterThirdYear = afterSndYear * 1.1M
 // and so on ...
-let ``exercise 1.1`` = 0
+let ``exercise 1.1`` = afterThirdYear - initial
 (** #### Value of ``exercise 1.1`` *)
 (*** include-value: ``exercise 1.1`` ***)
 (**
@@ -227,7 +229,11 @@ Hint: Use `List.sum` function
     2 + 4 + 6 + ... + 100
 
 #### --------------- Your code goes below --------------- *)
-let ``exercise 1.2`` = 0
+let isEven n = n % 2 = 0
+let ``exercise 1.2`` = 
+    [2 .. 100]
+    |> List.filter isEven
+    |> List.sum
 
 (** #### Value of ``exercise 1.2`` *)
 (*** include-value: ``exercise 1.2`` ***)
@@ -349,9 +355,17 @@ You might find following functions useful:
 
 #### --------------- Your code goes below --------------- *)
 let parseNumber (value: string) : Option<int> =
-    None
+    let allChars = 
+        value.ToCharArray() 
+        |> Array.forall System.Char.IsDigit
+    if allChars then
+        value |> System.Int32.Parse |> Some
+    else
+        None
 
 let ``exercise 2.1`` = parseNumber "42"
+let lista = [2;3]
+let tablica = [|2;3|]
 (** #### Value of ``exercise 2.1`` *)
 (*** include-value: ``exercise 2.1`` ***)
 (**
@@ -390,7 +404,8 @@ Declare `splitBy` function - a wrapper function arround `Split` method from `Str
 Hints: Use `Split` method from `String` and `Array.toList` function to convert array to list type.
 #### --------------- Your code goes below --------------- *)
 let splitBy (separator : char) (str : string) : list<string> =
-    []
+    str.Split([|separator|])
+    |> Array.toList
 
 let ``exercise 2.2`` = 
     "1,3,5,8,10" 
@@ -478,11 +493,17 @@ Define `Operator` and `Symbol` Discriminated Union Types.
 // `Int` is used here only so that the code compiles. 
 // Remove it and instead define proper Discriminated Union cases:
 // Operator might be one of the following: Plus, Minus, Multiply or Divide
-type Operator = Int
+type Operator = 
+| Plus
+| Minus
+| Multiply
+| Divide
 
 // Same as above:
 // Symbol might be either a NumSymbol (with int) or OpSymbol (with Operator)
-type Symbol = Int
+type Symbol = 
+| NumSymbol of int
+| OpSymbol of Operator
 
 (**
 
@@ -528,10 +549,14 @@ With help of pattern matching, implement `apply` function.
 
 #### --------------- Your code goes below --------------- *)
 let apply (operator : Operator) (left : int) (right : int) : int =
-    0
+    match operator with
+    | Plus -> left + right
+    | Minus -> left - right
+    | Multiply -> left * right
+    | Divide -> left / right
 
 // test the function, e.g. `apply Divide 15 4`
-let ``exercise 3.2`` = 0
+let ``exercise 3.2`` = apply Divide 15 4
 (** #### Value of ``exercise 3.2`` *)
 (*** include-value: ``exercise 3.2`` ***)
 (**
@@ -595,7 +620,15 @@ Implement `parseSymbol` - try parse all operators first, and then in nested `mat
 
 #### --------------- Your code goes below --------------- *)
 let parseSymbol (token : string) : Option<Symbol> =
-    None
+    match token with
+    | "+" -> Some (OpSymbol Plus)
+    | "-" -> Some (OpSymbol Minus)
+    | "*" -> Some (OpSymbol Multiply)
+    | "/" -> Some (OpSymbol Divide)
+    | _   ->
+        match parseNumber token with
+        | Some num -> Some (NumSymbol num)
+        | None -> None
 
 let ``exercise 3.3`` = List.map parseSymbol ["+"; "/"; "12"; "uups"] 
 (** #### Value of ``exercise 3.3`` *)
@@ -626,7 +659,10 @@ Implement `parseSymbols`. Useful functions: `List.map`, `sequence` as well as `s
 
 #### --------------- Your code goes below --------------- *)
 let parseSymbols (expression: string) : Option<list<Symbol>> =
-    None
+    expression
+    |> splitBy ' '
+    |> List.map parseSymbol
+    |> sequence
 
 let ``exercise 3.4`` = "1 2 / +" |> parseSymbols
 (** #### Value of ``exercise 3.4`` *)
@@ -762,10 +798,18 @@ Implement `compute` function ([Wiki](https://pl.wikipedia.org/wiki/Odwrotna_nota
 
 #### --------------- Your code goes below --------------- *)
 let rec compute (stack : list<int>) (symbols : list<Symbol>) : Option<int> =
-    None
+    match (symbols, stack) with
+    | [], [result] -> 
+        Some result
+    | NumSymbol x :: symbols', _ ->
+        compute (x :: stack) symbols'
+    | OpSymbol op :: symbols', right :: left :: stack' ->
+        compute (apply op left right :: stack') symbols'
+    | _ ->
+        None
 
 // test the function, e.g. `compute [] [NumSymbol 4; NumSymbol 2; OpSymbol Multiply]`
-let ``exercise 4.1`` : Option<int> = None
+let ``exercise 4.1`` : Option<int> = compute [] [NumSymbol 4; NumSymbol 2; OpSymbol Multiply]
 (** #### Value of ``exercise 4.1`` *)
 (*** include-value: ``exercise 4.1`` ***)
 (**
@@ -778,7 +822,9 @@ Using `parseSymbols` and `compute`, write `onp` function
 
 #### --------------- Your code goes below --------------- *)
 let onp (expression : string) : Option<int> = 
-    None
+    match parseSymbols expression with
+    | Some symbols -> compute [] symbols
+    | None -> None
 
 let ``exercise 4.2`` = onp "2 7 + 3 / 14 3 - 4 * + 3 +"
 (** #### Value of ``exercise 4.2`` *)
