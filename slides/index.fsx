@@ -604,25 +604,25 @@ let ``exercise 3.3`` = List.map parseSymbol ["+"; "/"; "12"; "uups"]
 
 --- 
 
-### Helper function "sequence"
+### Helper function "sequenceOpts"
 
 if all elements are Some values, return Some of those values
 otherwise if there's at least one None, return None *)
 
-let rec sequence (optionals: list<option<'a>>) : option<list<'a>> =
+let rec sequenceOpts (optionals: list<option<'a>>) : option<list<'a>> =
     match optionals with
     | [] -> 
         Some []
     | None :: _ ->
         None
     | Some h :: t ->
-        sequence t |> Option.map (fun t -> h :: t)
+        sequenceOpts t |> Option.map (fun t -> h :: t)
 
 
 (** ---
 
 ### Exercise 3.4
-Implement `parseSymbols`. Useful functions: `List.map`, `sequence` as well as `splitBy` and `parseSymbol` 
+Implement `parseSymbols`. Useful functions: `List.map`, `sequenceOpts` as well as `splitBy` and `parseSymbol` 
 
 #### --------------- Your code goes below --------------- *)
 let parseSymbols (expression: string) : Option<list<Symbol>> =
