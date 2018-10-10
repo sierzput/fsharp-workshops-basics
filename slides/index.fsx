@@ -214,7 +214,7 @@ F#
         (predicate : 'a -> bool) 
         (sequence : seq<'a>) = ...
 
-    let isOdd number = n % 2 = 1
+    let isOdd number = number % 2 = 1
 
     numbers |> filter isOdd
 
