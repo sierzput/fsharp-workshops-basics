@@ -134,10 +134,9 @@ Compound interest: compute earnings after 3 years of depositing $1000 on a 10% a
 
 #### --------------- Your code goes below --------------- *)
 let initial = 1000.0M
-let afterFirstYear = initial * 1.1M
-let afterSecondYear = afterFirstYear * 1.1M
-let afterThirdYear = afterSecondYear * 1.1M
-let ``exercise 1.1`` =  afterThirdYear
+let afterFirstYear = 0
+// and so on ...
+let ``exercise 1.1`` = 0
 (** #### Value of ``exercise 1.1`` *)
 (*** include-value: ``exercise 1.1`` ***)
 (**
@@ -233,6 +232,7 @@ let ``exercise 1.2a`` =
     [1..100] 
     |> List.filter isEven
     |> List.sum 
+let ``exercise 1.2`` = 0
 
 (** #### Value of ``exercise 1.2`` *)
 (*** include-value: ``exercise 1.2`` ***)
@@ -361,6 +361,8 @@ let parseNumber (value: string) : int option =
         Some (System.Int32.Parse value)
     else
         None
+let parseNumber (value: string) : Option<int> =
+    None
 
 let ``exercise 2.1`` = parseNumber "42"
 (** #### Value of ``exercise 2.1`` *)
@@ -403,6 +405,8 @@ Hints: Use `Split` method from `String` and `Array.toList` function to convert a
 let splitBy (separator : char) (str : string) : string list =
     let parts = str.Split(separator)
     Array.toList parts
+let splitBy (separator : char) (str : string) : list<string> =
+    []
 
 let ``exercise 2.2`` = 
     "1,3,5,8,10" 
@@ -502,6 +506,11 @@ type Symbol =
     | NumSymbol of int
     | OpSymbol of Operator
 
+type Operator = Int
+
+// Same as above:
+// Symbol might be either a NumSymbol (with int) or OpSymbol (with Operator)
+type Symbol = Int
 
 (**
 
@@ -547,11 +556,7 @@ With help of pattern matching, implement `apply` function.
 
 #### --------------- Your code goes below --------------- *)
 let apply (operator : Operator) (left : int) (right : int) : int =
-    match operator with
-    | Plus -> left + right
-    | Minus -> left - right
-    | Multiply -> left * right
-    | Divide -> left * right
+    0
 
 // test the function, e.g. `apply Divide 15 4`
 let ``exercise 3.2`` = 0
@@ -628,6 +633,8 @@ let parseSymbol (token : string) : Symbol option =
            //match parsedNumber with
            //| None -> None
            //| Some value -> Some (NumSymbol value) 
+let parseSymbol (token : string) : Option<Symbol> =
+    None
 
 let ``exercise 3.3`` = List.map parseSymbol ["+"; "/"; "12"; "uups"] 
 (** #### Value of ``exercise 3.3`` *)
@@ -662,6 +669,8 @@ let parseSymbols (expression: string) : Symbol list option =
     |> splitBy ' ' 
     |> List.map parseSymbol
     |> sequenceOpts
+let parseSymbols (expression: string) : Option<list<Symbol>> =
+    None
 
 let ``exercise 3.4`` = "1 2 / +" |> parseSymbols
 (** #### Value of ``exercise 3.4`` *)
