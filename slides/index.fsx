@@ -165,7 +165,7 @@ let pipeResult =
 (*** include-value: pipeResult ***)
 (** ---
 #### map function  *)
-let lengths = 
+let lengths =
     ["F#"; "is"; "the"; "best"]
     |> List.map (fun s -> s.Length)
 (*** include-value: lengths ***)
@@ -183,7 +183,7 @@ Note: a new immutable value is created in each computation step
 let isOdd number =
     number % 2 = 1
 
-let ``example 1.2`` = 
+let ``example 1.2`` =
     [2 .. 10]
     |> List.filter isOdd
     |> List.map string
@@ -200,7 +200,7 @@ C#
 
     [lang=csharp]
     public static IEnumerable<'T> Where (
-        this IEnumberable<'T> sequence, 
+        this IEnumberable<'T> sequence,
         Func<'T, bool> predicate) { ... }
 
     public static bool IsOdd (int number) { return number % 2 == 1; }
@@ -210,8 +210,8 @@ C#
 F#
 
     [lang=fsharp]
-    let filter 
-        (predicate : 'a -> bool) 
+    let filter
+        (predicate : 'a -> bool)
         (sequence : seq<'a>) = ...
 
     let isOdd number = number % 2 = 1
@@ -227,11 +227,11 @@ Hint: Use `List.sum` function
     2 + 4 + 6 + ... + 100
 
 #### --------------- Your code goes below --------------- *)
-let ``exercise 1.2a`` = 
+let ``exercise 1.2a`` =
     let isEven number = number % 2 = 1
-    [1..100] 
+    [1..100]
     |> List.filter isEven
-    |> List.sum 
+    |> List.sum
 let ``exercise 1.2`` = 0
 
 (** #### Value of ``exercise 1.2`` *)
@@ -244,7 +244,7 @@ let ``exercise 1.2`` = 0
 
 ---
 
-### Summary: Immutable Values  
+### Summary: Immutable Values
 
 * By **default** values in F# are immutable
 * "Pipe" operator (`|>`) is a nice syntactic sugar for writing a sequence of expressions
@@ -271,7 +271,7 @@ let ``exercise 1.2`` = 0
 let writeLine = System.Console.WriteLine "Hello"
 
 // in let bindings, `=` associates symbol with value
-let writeLineIsUnit : bool = 
+let writeLineIsUnit : bool =
     // but anywhere else, `=` means equality test
     writeLine = ()
 
@@ -293,7 +293,7 @@ let day =
 
 #### Binding values in inside scope *)
 let day2 =
-    let today = System.DateTime.Now.DayOfWeek 
+    let today = System.DateTime.Now.DayOfWeek
     if today = System.DayOfWeek.Thursday then
         "thursday"
     else
@@ -305,7 +305,7 @@ let day2 =
 
 #### Option type *)
 let workDay =
-    let today = System.DateTime.Now.DayOfWeek 
+    let today = System.DateTime.Now.DayOfWeek
     if today <> System.DayOfWeek.Saturday &&
        today <> System.DayOfWeek.Sunday then
         Some today
@@ -349,7 +349,7 @@ let ``example 2.1`` = parseBool "True"
 ### Exercise 2.1
 
 Implement `parseNumber` function.
-You might find following functions useful: 
+You might find following functions useful:
 `ToCharArray()` (String member), `Array.forall`, `System.Char.IsDigit`, `System.Int32.Parse`.
 
 #### --------------- Your code goes below --------------- *)
@@ -399,7 +399,7 @@ let ``example 2.2`` = isPalindrome "kajak"
 ---
 
 ### Exercise 2.2
-Declare `splitBy` function - a wrapper function arround `Split` method from `String` object. 
+Declare `splitBy` function - a wrapper function arround `Split` method from `String` object.
 Hints: Use `Split` method from `String` and `Array.toList` function to convert array to list type.
 #### --------------- Your code goes below --------------- *)
 let splitBy (separator : char) (str : string) : string list =
@@ -408,9 +408,9 @@ let splitBy (separator : char) (str : string) : string list =
 let splitBy (separator : char) (str : string) : list<string> =
     []
 
-let ``exercise 2.2`` = 
-    "1,3,5,8,10" 
-    |> splitBy ',' 
+let ``exercise 2.2`` =
+    "1,3,5,8,10"
+    |> splitBy ','
 (** #### Value of ``exercise 2.2`` *)
 (*** include-value: ``exercise 2.2`` ***)
 (**
@@ -443,7 +443,7 @@ let ``exercise 2.2`` =
 
 ### New Stuff 3.1
 #### Discriminated Unions - Empty cases (enum style) *)
-type Size = 
+type Size =
     | Small
     | Medium
     | Large
@@ -458,9 +458,9 @@ type Shape =
     | Rectangle of width : float * height : float
     | Circle of radius : float
 
-type Result = 
+type Result =
     | Success                // no string needed for success state
-    | ErrorMessage of string // error message needed 
+    | ErrorMessage of string // error message needed
 (**
 
 ---
@@ -472,12 +472,12 @@ type FruitType =
     | Apple
     | Grapefruit
 
-type Meal = 
+type Meal =
     | Fruit of FruitType
     | Sandwich
     | FastFood of string
 
-let ``example 3.1`` = 
+let ``example 3.1`` =
     [Sandwich; FastFood "Bar Żuławski"; Fruit Apple]
 (** #### Value of ``example 3.1`` *)
 (*** include-value: ``example 3.1`` ***)
@@ -486,15 +486,15 @@ let ``example 3.1`` =
 ---
 
 ### Exercise 3.1
-Define `Operator` and `Symbol` Discriminated Union Types. 
+Define `Operator` and `Symbol` Discriminated Union Types.
 
 `Symbol` should use `Operator` as field in one case
 
 #### --------------- Your code goes below --------------- *)
-// `Int` is used here only so that the code compiles. 
+// `Int` is used here only so that the code compiles.
 // Remove it and instead define proper Discriminated Union cases:
 // Operator might be one of the following: Plus, Minus, Multiply or Divide
-type Operator = 
+type Operator =
     | Plus
     | Minus
     | Multiply
@@ -502,7 +502,7 @@ type Operator =
 
 // Same as above:
 // Symbol might be either a NumSymbol (with int) or OpSymbol (with Operator)
-type Symbol = 
+type Symbol =
     | NumSymbol of int
     | OpSymbol of Operator
 
@@ -528,10 +528,10 @@ let formatOptionalValue optionalValue =
     | None ->
         "No value at all!"
 
-let formattedValues = 
+let formattedValues =
     [Some "nice string"; None]
     |> List.map formatOptionalValue
-(*** include-value: formattedValues ***)            
+(*** include-value: formattedValues ***)
 (**
 
 ---
@@ -542,7 +542,7 @@ let area shape =
     match shape with
     | Square edge -> edge ** 2.0
     | Rectangle (width, height) -> width * height
-    | Circle radius -> System.Math.PI * (radius ** 2.0)  
+    | Circle radius -> System.Math.PI * (radius ** 2.0)
 
 let ``example 3.2`` = area (Circle 10.0)
 (** #### Value of ``example 3.2`` *)
@@ -609,8 +609,8 @@ let isHealthy meal =
         | "Green Way" -> true
         | _ -> false
 
-let ``example 3.3`` = 
-    FastFood "Bar Żuławski" 
+let ``example 3.3`` =
+    FastFood "Bar Żuławski"
     |> isHealthy
 (** #### Value of ``example 3.3`` *)
 (*** include-value: ``example 3.3`` ***)
@@ -619,7 +619,7 @@ let ``example 3.3`` =
 ---
 
 ### Exercise 3.3
-Implement `parseSymbol` - try parse all operators first, and then in nested `match` expression use `parseNumber` function 
+Implement `parseSymbol` - try parse all operators first, and then in nested `match` expression use `parseNumber` function
 
 #### --------------- Your code goes below --------------- *)
 let parseSymbol (token : string) : Symbol option =
@@ -632,16 +632,16 @@ let parseSymbol (token : string) : Symbol option =
            //let parsedNumber = parseNumber token
            //match parsedNumber with
            //| None -> None
-           //| Some value -> Some (NumSymbol value) 
+           //| Some value -> Some (NumSymbol value)
 let parseSymbol (token : string) : Option<Symbol> =
     None
 
-let ``exercise 3.3`` = List.map parseSymbol ["+"; "/"; "12"; "uups"] 
+let ``exercise 3.3`` = List.map parseSymbol ["+"; "/"; "12"; "uups"]
 (** #### Value of ``exercise 3.3`` *)
 (*** include-value: ``exercise 3.3`` ***)
 (**
 
---- 
+---
 
 ### Helper function "sequenceOpts"
 
@@ -650,7 +650,7 @@ otherwise if there's at least one None, return None *)
 
 let rec sequenceOpts (optionals: 'a option list) : 'a list option =
     match optionals with
-    | [] -> 
+    | [] ->
         Some []
     | None :: _ ->
         None
@@ -661,12 +661,12 @@ let rec sequenceOpts (optionals: 'a option list) : 'a list option =
 (** ---
 
 ### Exercise 3.4
-Implement `parseSymbols`. Useful functions: `List.map`, `sequenceOpts` as well as `splitBy` and `parseSymbol` 
+Implement `parseSymbols`. Useful functions: `List.map`, `sequenceOpts` as well as `splitBy` and `parseSymbol`
 
 #### --------------- Your code goes below --------------- *)
 let parseSymbols (expression: string) : Symbol list option =
     expression
-    |> splitBy ' ' 
+    |> splitBy ' '
     |> List.map parseSymbol
     |> sequenceOpts
 let parseSymbols (expression: string) : Option<list<Symbol>> =
@@ -685,7 +685,7 @@ let ``exercise 3.4`` = "1 2 / +" |> parseSymbols
 
 ### Summary: Pattern Matching
 
-* Using Discriminated Unions is a neat way to model data 
+* Using Discriminated Unions is a neat way to model data
 * Pattern matching is a powerful and elegant mechanism in F# for "branching" code
 * F# compiler warns when it finds unhandled cases in pattern matching
 
@@ -726,7 +726,7 @@ let rec countdownAcc acc counter =
     match counter with
     | 0 -> acc
     | x -> countdownAcc (acc + ";" + x.ToString()) (counter - 1)
-    
+
 let countingAcc = countdownAcc "" 10
 (*** include-value: countingAcc ***)
 (**
@@ -745,7 +745,7 @@ let factorialOf5 = factorial 5
 (**
 #### Factorial - with accumulator *)
 let rec factorialTail acc x =
-    match x with 
+    match x with
     | 1 -> acc
     | _ -> factorialTail (x*acc) (x-1)
 
@@ -821,7 +821,7 @@ let ``exercise 4.1`` : int option = None
 Using `parseSymbols` and `compute`, write `onp` function
 
 #### --------------- Your code goes below --------------- *)
-let onp (expression : string) : int option = 
+let onp (expression : string) : int option =
     None
 
 let ``exercise 4.2`` = onp "2 7 + 3 / 14 3 - 4 * + 3 +"
