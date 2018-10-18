@@ -227,11 +227,6 @@ Hint: Use `List.sum` function
     2 + 4 + 6 + ... + 100
 
 #### --------------- Your code goes below --------------- *)
-let ``exercise 1.2a`` =
-    let isEven number = number % 2 = 1
-    [1..100]
-    |> List.filter isEven
-    |> List.sum
 let ``exercise 1.2`` = 0
 
 (** #### Value of ``exercise 1.2`` *)
@@ -354,14 +349,6 @@ You might find following functions useful:
 
 #### --------------- Your code goes below --------------- *)
 let parseNumber (value: string) : int option =
-    let onlyDigits =
-        value.ToCharArray()
-        |> Array.forall System.Char.IsDigit
-    if onlyDigits  then
-        Some (System.Int32.Parse value)
-    else
-        None
-let parseNumber (value: string) : Option<int> =
     None
 
 let ``exercise 2.1`` = parseNumber "42"
@@ -403,9 +390,6 @@ Declare `splitBy` function - a wrapper function arround `Split` method from `Str
 Hints: Use `Split` method from `String` and `Array.toList` function to convert array to list type.
 #### --------------- Your code goes below --------------- *)
 let splitBy (separator : char) (str : string) : string list =
-    let parts = str.Split(separator)
-    Array.toList parts
-let splitBy (separator : char) (str : string) : list<string> =
     []
 
 let ``exercise 2.2`` =
@@ -494,18 +478,6 @@ Define `Operator` and `Symbol` Discriminated Union Types.
 // `Int` is used here only so that the code compiles.
 // Remove it and instead define proper Discriminated Union cases:
 // Operator might be one of the following: Plus, Minus, Multiply or Divide
-type Operator =
-    | Plus
-    | Minus
-    | Multiply
-    | Divide
-
-// Same as above:
-// Symbol might be either a NumSymbol (with int) or OpSymbol (with Operator)
-type Symbol =
-    | NumSymbol of int
-    | OpSymbol of Operator
-
 type Operator = Int
 
 // Same as above:
@@ -623,17 +595,6 @@ Implement `parseSymbol` - try parse all operators first, and then in nested `mat
 
 #### --------------- Your code goes below --------------- *)
 let parseSymbol (token : string) : Symbol option =
-    match token with
-    | "+" -> Some (OpSymbol Plus)
-    | "-" -> Some (OpSymbol Minus)
-    | "*" -> Some (OpSymbol Multiply)
-    | "/" -> Some (OpSymbol Divide)
-    | _ -> parseNumber token |> Option.map NumSymbol
-           //let parsedNumber = parseNumber token
-           //match parsedNumber with
-           //| None -> None
-           //| Some value -> Some (NumSymbol value)
-let parseSymbol (token : string) : Option<Symbol> =
     None
 
 let ``exercise 3.3`` = List.map parseSymbol ["+"; "/"; "12"; "uups"]
@@ -665,11 +626,6 @@ Implement `parseSymbols`. Useful functions: `List.map`, `sequenceOpts` as well a
 
 #### --------------- Your code goes below --------------- *)
 let parseSymbols (expression: string) : Symbol list option =
-    expression
-    |> splitBy ' '
-    |> List.map parseSymbol
-    |> sequenceOpts
-let parseSymbols (expression: string) : Option<list<Symbol>> =
     None
 
 let ``exercise 3.4`` = "1 2 / +" |> parseSymbols
