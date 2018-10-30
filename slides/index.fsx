@@ -795,10 +795,23 @@ Implement `compute` function ([Wiki](https://pl.wikipedia.org/wiki/Odwrotna_nota
 
 #### --------------- Your code goes below --------------- *)
 let rec compute (stack : int list) (symbols : Symbol list) : int option =
-    None
+    match symbols with
+    | [] ->
+        match stack with
+        | [result] -> Some result
+        | _ -> None
+    | symbol :: symbolsTail ->
+        match symbol with
+        | NumSymbol number ->
+            compute (number :: stack) symbolsTail
+        | OpSymbol operator ->
+            match stack with
+            | head :: second :: stackTail ->
+                compute ((apply operator second head) :: stackTail) symbolsTail
+            | _ -> None
 
 // test the function, e.g. `compute [] [NumSymbol 4; NumSymbol 2; OpSymbol Multiply]`
-let ``exercise 4.1`` : int option = None
+let ``exercise 4.1`` : int option = compute [] [NumSymbol 4; NumSymbol 2; OpSymbol Multiply]
 (** #### Value of ``exercise 4.1`` *)
 (*** include-value: ``exercise 4.1`` ***)
 (**
