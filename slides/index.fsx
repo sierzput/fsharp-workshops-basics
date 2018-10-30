@@ -824,7 +824,9 @@ Using `parseSymbols` and `compute`, write `onp` function
 
 #### --------------- Your code goes below --------------- *)
 let onp (expression : string) : int option =
-    None
+    match parseSymbols expression with
+    | None -> None
+    | Some symbols -> compute [] symbols
 
 let ``exercise 4.2`` = onp "2 7 + 3 / 14 3 - 4 * + 3 +"
 (** #### Value of ``exercise 4.2`` *)
