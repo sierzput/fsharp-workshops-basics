@@ -134,9 +134,12 @@ Compound interest: compute earnings after 3 years of depositing $1000 on a 10% a
 
 #### --------------- Your code goes below --------------- *)
 let initial = 1000.0M
-let afterFirstYear = 0
+let afterFirstYear = initial * 1.1M
+let afterSecondYear = afterFirstYear * 1.1M
+let afterThirdYear = afterSecondYear * 1.1M
+let earning = afterThirdYear - initial
 // and so on ...
-let ``exercise 1.1`` = 0
+let ``exercise 1.1`` = List.fold (fun acc _ -> acc * 1.1M) initial [1M..3M] - initial
 (** #### Value of ``exercise 1.1`` *)
 (*** include-value: ``exercise 1.1`` ***)
 (**
@@ -167,7 +170,7 @@ let pipeResult =
 #### map function  *)
 let lengths =
     ["F#"; "is"; "the"; "best"]
-    |> List.map (fun s -> s.Length)
+    |> List.map String.length
 (*** include-value: lengths ***)
 (**
 `map` is an equivalent of `Select()` in C# LINQ
@@ -227,7 +230,12 @@ Hint: Use `List.sum` function
     2 + 4 + 6 + ... + 100
 
 #### --------------- Your code goes below --------------- *)
-let ``exercise 1.2`` = 0
+let ``exercise 1.2`` =
+    let isEven number =
+        number % 2 = 0
+    [0..100]
+    |> List.filter isEven
+    |> List.sum
 
 (** #### Value of ``exercise 1.2`` *)
 (*** include-value: ``exercise 1.2`` ***)
@@ -325,7 +333,7 @@ let lengthOfWord = length "Hello word"
 
 ### Example 2.1
 #### Parsing boolean value *)
-let parseBool (value : string) =
+let parseBool (value : string) : bool option =
     let lowercase = value.ToLowerInvariant()
     if lowercase = "true" then
         Some true
@@ -349,7 +357,13 @@ You might find following functions useful:
 
 #### --------------- Your code goes below --------------- *)
 let parseNumber (value: string) : int option =
-    None
+    let isValidNumber (v:string): bool =
+        v.ToCharArray()
+        |> Array.forall (fun x -> System.Char.IsDigit x)
+    if (isValidNumber value) then
+        Some (System.Int32.Parse value)
+    else
+        None
 
 let ``exercise 2.1`` = parseNumber "42"
 (** #### Value of ``exercise 2.1`` *)
@@ -390,7 +404,8 @@ Declare `splitBy` function - a wrapper function arround `Split` method from `Str
 Hints: Use `Split` method from `String` and `Array.toList` function to convert array to list type.
 #### --------------- Your code goes below --------------- *)
 let splitBy (separator : char) (str : string) : string list =
-    []
+    str.Split separator
+    |> Array.toList
 
 let ``exercise 2.2`` =
     "1,3,5,8,10"
@@ -478,11 +493,17 @@ Define `Operator` and `Symbol` Discriminated Union Types.
 // `Int` is used here only so that the code compiles.
 // Remove it and instead define proper Discriminated Union cases:
 // Operator might be one of the following: Plus, Minus, Multiply or Divide
-type Operator = Int
+type Operator =
+    | Plus
+    | Minus
+    | Multiply
+    | Divide
 
 // Same as above:
 // Symbol might be either a NumSymbol (with int) or OpSymbol (with Operator)
-type Symbol = Int
+type Symbol =
+    | NumSymbol of int
+    | OpSymbol of Operator
 
 (**
 
@@ -528,10 +549,14 @@ With help of pattern matching, implement `apply` function.
 
 #### --------------- Your code goes below --------------- *)
 let apply (operator : Operator) (left : int) (right : int) : int =
-    0
+    match operator with
+    | Plus _ -> left + right
+    | Minus _ -> left - right
+    | Multiply _ -> left * right
+    | Divide _ -> left / right
 
 // test the function, e.g. `apply Divide 15 4`
-let ``exercise 3.2`` = 0
+let ``exercise 3.2`` = apply Divide 15 4
 (** #### Value of ``exercise 3.2`` *)
 (*** include-value: ``exercise 3.2`` ***)
 (**
@@ -595,7 +620,12 @@ Implement `parseSymbol` - try parse all operators first, and then in nested `mat
 
 #### --------------- Your code goes below --------------- *)
 let parseSymbol (token : string) : Symbol option =
-    None
+    match token with
+    | "+" -> Some (OpSymbol Plus)
+    | "-" -> Some (OpSymbol Minus)
+    | "*" -> Some (OpSymbol Multiply)
+    | "/" -> Some (OpSymbol Divide)
+    | _ -> parseNumber token |> Option.map NumSymbol
 
 let ``exercise 3.3`` = List.map parseSymbol ["+"; "/"; "12"; "uups"]
 (** #### Value of ``exercise 3.3`` *)
@@ -626,7 +656,10 @@ Implement `parseSymbols`. Useful functions: `List.map`, `sequenceOpts` as well a
 
 #### --------------- Your code goes below --------------- *)
 let parseSymbols (expression: string) : Symbol list option =
-    None
+    expression
+    |> splitBy ' '
+    |> List.map parseSymbol
+    |> sequenceOpts
 
 let ``exercise 3.4`` = "1 2 / +" |> parseSymbols
 (** #### Value of ``exercise 3.4`` *)
@@ -715,7 +748,7 @@ let factorialOf5Tail = factorialTail 1 5
 let rec commaSeparated acc list =
     match list with
     | [] -> acc
-    | [single] -> acc + "," + single
+    | [single] -> acc + "," + single // redundant line
     | head :: tail -> commaSeparated (acc + "," + head) tail
 
 let csv = commaSeparated "" ["some";"values";"go";"here"]
